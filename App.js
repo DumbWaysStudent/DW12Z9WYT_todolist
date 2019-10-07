@@ -1,11 +1,32 @@
 import React, { Component } from 'react';
-import { Container, Content, List, ListItem, Button, Text, Input, Item, Body, Right, Icon} from 'native-base';
+import { Container, Content, List, ListItem, Button, Text, Input, Item, Body, Right, Icon, Left, CheckBox } from 'native-base';
 
 export default class App extends Component {
   constructor() {
     super();
     this.state = {
-      lists: ['work','swim','study','sleep','run'],//Array awal
+      lists: [
+        {
+          job:'work',
+          status: false
+        },
+        {
+          job:'swim',
+          status: false
+        },
+        {
+          job:'study',
+          status: false
+        },
+        {
+          job:'sleep',
+          status: false
+        },
+        {
+          job:'run',
+          status:false
+        }
+      ],//Array diubah menjadi array object untuk mendapatkan boolean true or false
       data: ''
     }// Array diubah karena id tidak diperlukan, karena bertumpu pada index array
   }
@@ -17,13 +38,25 @@ export default class App extends Component {
     this.setState({lists: deleteObj});//List yang lama diupdate oleh array baru yang telah di filter
   }
 
+  onCek = (index) => {
+    const cek = this.state.lists.map((list, ids) => {
+        if (index == ids)
+          list.status = !list.status;//Untuk melihat status jika true maka diubah ke false begitupula sebaliknya
+        return list;
+    });
+    this.setState({lists: cek});
+  }
+
   show = () => {
     return this.state.lists.map((list, index) => {
         // proses pembuatan array baru dari data awal lists menjadi list
       return (
         <ListItem icon key={index}>
+          <Left>
+            <CheckBox checked={list.status} onPress={() => this.onCek(index)}/>
+          </Left>
           <Body>
-            <Text>{list}</Text>
+            <Text>{list.job}</Text>
             {/* menampilkan list yang telah diupdate */}
           </Body>
             {/* <Button bordered onPress={() => this.onDelete(index)}>
@@ -42,7 +75,11 @@ export default class App extends Component {
   }
 
   onPress = () => {
-    const input = this.state.lists.concat(this.state.data);
+    const plus = {
+      job: this.state.data,
+      status: false
+  };
+    const input = this.state.lists.concat(plus);
     //Menggunakan concat karena menggunakan push error
     this.setState({lists: input}, () => {
       this.clear();
