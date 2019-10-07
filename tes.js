@@ -27,7 +27,11 @@ export default class App extends Component {
           status:false
         }
       ],//Array diubah menjadi array object untuk mendapatkan boolean true or false
-      data: ''
+      data: '',
+      update: {
+        condition: false,
+        index: 0
+      }
     }// Array diubah karena id tidak diperlukan, karena bertumpu pada index array
   }
 
@@ -51,6 +55,7 @@ export default class App extends Component {
     const edit = this.state.lists.map((list, ids) => {
         if (index == ids) { //menyesuaikan index dengan id yg kita pilih
           this.changeTextValue(list.job);
+          this.changeButtonValue(true, ids);
         }
         return list;
     });
@@ -90,12 +95,19 @@ export default class App extends Component {
   }
 
   onPress = () => {
-    const plus = {
-      job: this.state.data,
-      status: false
-  };
-    const input = this.state.lists.concat(plus);
-    //Menggunakan concat karena menggunakan push error
+    if (!this.state.data)
+      return;
+    const datas = {
+        job: this.state.data,
+        checked: false
+    };
+    let input;
+    if (this.state.update.condition) {
+      this.state.lists.splice(this.state.update.index, 1, datas);
+      this.changeButtonValue(false, 0);
+      input = this.state.lists;
+    } else
+      input = this.state.lists.concat(datas);
     this.setState({lists: input}, () => {
       this.clear();
     });
@@ -103,6 +115,14 @@ export default class App extends Component {
 
   changeTextValue = (input) => {
     this.setState({data: input});
+  }
+
+  changeButtonValue = (input, ids) => {
+    const data = {
+      condition: input,
+      index: ids
+    };
+    this.setState({update: data});
   }
 
   clear = () => {
@@ -121,7 +141,7 @@ export default class App extends Component {
               />
             </Item>
             <Button bordered style={styles.body} onPress={this.onPress}>
-              <Text>Add</Text>
+              <Text>{this.state.update.condition ? 'EDIT' : 'ADD'}</Text>
             </Button>
           </Body>
           <List>
