@@ -79,7 +79,7 @@ export default class App extends Component {
                 <Icon type="FontAwesome" name="pencil" /> 
                 {/* Mengambil ikon dari fontawesome dengan gambar ikon pencil */}
               </TouchableOpacity>
-              <TouchableOpacity  onPress={() => this.onDelete(index)} underlayColor='red'  >
+              <TouchableOpacity  onPress={() => this.onDelete(index)}  >
                 <Icon color='red' type="FontAwesome" name="trash-o"  />
               </TouchableOpacity>
             </Right>
