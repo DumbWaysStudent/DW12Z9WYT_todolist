@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, List, ListItem, Button, Text, Input, Item, Body, Right, Icon, Left, CheckBox } from 'native-base';
-
+import {TouchableOpacity} from 'react-native'
 export default class App extends Component {
   constructor() {
     super();
@@ -47,6 +47,16 @@ export default class App extends Component {
     this.setState({lists: cek});
   }
 
+  onEdit = (index) => {
+    const edit = this.state.lists.map((list, ids) => {
+        if (index == ids) { //menyesuaikan index dengan id yg kita pilih
+          this.changeTextValue(list.job);
+        }
+        return list;
+    });
+    this.setState({lists: edit});
+  }//menampilkan nama pekerjaan yang kita pilih untuk di edit di kolom Textinput
+
   show = () => {
     return this.state.lists.map((list, index) => {
         // proses pembuatan array baru dari data awal lists menjadi list
@@ -54,9 +64,10 @@ export default class App extends Component {
         <ListItem icon key={index}>
           <Left>
             <CheckBox checked={list.status} onPress={() => this.onCek(index)}/>
+            {/* checked untuk melihat status lalu fungsi oncek dijalankan ketika tombol dipencet */}
           </Left>
           <Body>
-            <Text>{list.job}</Text>
+            <Text style={{margin:5}}>{list.job}</Text>
             {/* menampilkan list yang telah diupdate */}
           </Body>
             {/* <Button bordered onPress={() => this.onDelete(index)}>
@@ -64,9 +75,13 @@ export default class App extends Component {
             </Button> */}
             <ListItem icon>
             <Right>
-              <Button style={{ backgroundColor: "#FF9501" }} onPress={() => this.onDelete(index)} >
-                <Icon active name="trash" />
-              </Button>
+              <TouchableOpacity  style={{marginRight:5}} onPress={() => this.onEdit(index)} >
+                <Icon type="FontAwesome" name="pencil" /> 
+                {/* Mengambil ikon dari fontawesome dengan gambar ikon pencil */}
+              </TouchableOpacity>
+              <TouchableOpacity  onPress={() => this.onDelete(index)} >
+                <Icon type="FontAwesome" name="trash-o" />
+              </TouchableOpacity>
             </Right>
             </ListItem>
         </ListItem>
@@ -91,7 +106,7 @@ export default class App extends Component {
   }
 
   clear = () => {
-    this.setState({data: ''});
+    this.setState({data: ''}); //Mengembalikan data kembali menjadi string kosong setelah tombol ditekan
   }
 
   render() {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Content, List, ListItem, Button, Text, Input, Item, Body, Right, Icon, Left, CheckBox } from 'native-base';
-
+import {TouchableOpacity} from 'react-native'
 export default class App extends Component {
   constructor() {
     super();
@@ -47,13 +47,24 @@ export default class App extends Component {
     this.setState({lists: cek});
   }
 
+  onEdit = (index) => {
+    const edit = this.state.lists.map((list, ids) => {
+        if (index == ids) { //menyesuaikan index dengan id yg kita pilih
+          this.changeTextValue(list.job);
+        }
+        return list;
+    });
+    this.setState({lists: edit});
+  }//menampilkan nama pekerjaan yang kita pilih untuk di edit di kolom Textinput
+
   show = () => {
     return this.state.lists.map((list, index) => {
         // proses pembuatan array baru dari data awal lists menjadi list
       return (
         <ListItem icon key={index}>
           <Left>
-            <CheckBox checked={list.status} onPress={() => this.onCek(index)}/>
+            <CheckBox checked={list.status} onPress={() => this.onCek(index)} color='green'/>
+            {/* checked untuk melihat status lalu fungsi oncek dijalankan ketika tombol dipencet */}
           </Left>
           <Body>
             <Text>{list.job}</Text>
@@ -64,9 +75,13 @@ export default class App extends Component {
             </Button> */}
             <ListItem icon>
             <Right>
-              <Button style={{ backgroundColor: "#FF9501" }} onPress={() => this.onDelete(index)} >
-                <Icon active name="trash" />
-              </Button>
+              <TouchableOpacity  style={{marginRight:5}} onPress={() => this.onEdit(index)} >
+                <Icon type="FontAwesome" name="pencil" /> 
+                {/* Mengambil ikon dari fontawesome dengan gambar ikon pencil */}
+              </TouchableOpacity>
+              <TouchableOpacity  onPress={() => this.onDelete(index)} underlayColor='red'  >
+                <Icon color='red' type="FontAwesome" name="trash-o"  />
+              </TouchableOpacity>
             </Right>
             </ListItem>
         </ListItem>
@@ -76,8 +91,8 @@ export default class App extends Component {
 
   onPress = () => {
     const plus = {
-      job: this.state.data,
-      status: false
+      job: this.state.data,//memasukkan job baru sesuai dengan kata yang diinput
+      status: false // memasukkan checkbox bernilai kosong/false
   };
     const input = this.state.lists.concat(plus);
     //Menggunakan concat karena menggunakan push error
@@ -91,7 +106,7 @@ export default class App extends Component {
   }
 
   clear = () => {
-    this.setState({data: ''});
+    this.setState({data: ''}); //Mengembalikan data kembali menjadi string kosong setelah tombol ditekan
   }
 
   render() {
@@ -102,14 +117,14 @@ export default class App extends Component {
             <Item style={styles.input}>
               <Input placeholder='Type Something'
                 onChangeText={text => {this.changeTextValue(text)}}
-                value={this.state.data}
+                value={this.state.data} style={{borderWidth:2, marginRight:5}}
               />
             </Item>
             <Button bordered style={styles.body} onPress={this.onPress}>
               <Text>Add</Text>
             </Button>
           </Body>
-          <List>
+          <List >
             {this.show()}
           </List>
         </Content>
@@ -121,11 +136,12 @@ export default class App extends Component {
 const styles = {
   inputContent: {
     flexDirection: 'row',
+    padding: 15
   },
   input: {
     flex: 8,
   },
-  button: {
-    flex: 2,
+  body: {
+    flex: 2
   },
 }
